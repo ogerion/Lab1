@@ -102,8 +102,8 @@ classDiagram
 		T & getVal()
 		setNext(ShrdPtr<Node<T>> &)
 		setPrev(ShrdPtr<Node<T>> &)
-		ShrdPtr<Node<T>> & getNext();
-		ShrdPtr<Node<T>> & getPrev();
+		ShrdPtr<Node<T>> & getNext()
+		ShrdPtr<Node<T>> & getPrev()
 	}
 	class LinkedListSequence{
 		Shrdptr<Node<T>> base
