@@ -42,6 +42,10 @@ public:
 
     size_t countS();
 
+    T* get() const override;
+
+    T* operator->() const override;
+
     size_t* getWCounter() const
     {
         return this->counterW;
@@ -197,6 +201,32 @@ WeakPtr<T>& WeakPtr<T>::operator=(const ShrdPtr<U>& other)
     }
 }
 
+template <class T>
+T* WeakPtr<T>::get() const
+{
+    if (*(this->counterS) != 0)
+    {
+        return ptr;
+    }
+    else
+    {
+        throw "All shared pointer are expired!";
+    }
+}
+
+template <class T>
+T* WeakPtr<T>::operator->() const
+{
+    if (*(this->counterS) != 0)
+    {
+        return ptr;
+    }
+    else
+    {
+        throw "All shared pointer are expired!";
+    }
+}
+
 template<class T>
 WeakPtr<T>::~WeakPtr()
 {
@@ -229,14 +259,15 @@ size_t WeakPtr<T>::countS()
 template <class T>
 void WeakPtr<T>::release()
 {
-    if ((this->ptr != nullptr) && (*(this->counterS) == 0))
+    if (this->counterS != nullptr)
     {
-        delete this->counterS;
-        delete this->counterW;
-    }
-    else if (this->ptr != nullptr)
-    {
-        *(this->counterW) -= 1;
+        *(this->counterS) -= 1;
+        if (*(this->counterS) == 0 && *(this->counterW) == 0)
+        {
+            delete this->ptr;
+            delete this->counterS;
+            delete this->counterW;
+        }
     }
 
 }

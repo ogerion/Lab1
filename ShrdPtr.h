@@ -26,7 +26,7 @@ public:
     ShrdPtr(WeakPtr<U>&&);
 
     template<class U>
-    explicit ShrdPtr(const WeakPtr<U>&);
+    ShrdPtr(const WeakPtr<U>&);
 
     template<class U>
     ShrdPtr<T>& operator=(ShrdPtr<U>&&);
@@ -53,6 +53,10 @@ public:
     {
         return this->counterS;
     }
+
+    T* get() const override;
+
+    T* operator->() const override;
 
     ~ShrdPtr();
 
@@ -98,7 +102,7 @@ ShrdPtr<T>::ShrdPtr(const ShrdPtr<U>& other)
 {
     if (std::is_base_of<T, U>() || typeid(T) == typeid(U))
     {
-        this->ptr = static_cast<T*>(other.get());
+        this->ptr = (T*)(other.get());
         this->counterS = other.getSCounter();
         *(this->counterS) += 1;
         this->counterW = other.getWCounter();
@@ -132,7 +136,7 @@ ShrdPtr<T>::ShrdPtr(const WeakPtr<U>& other)
 {
     if (std::is_base_of<T, U>() || typeid(T) == typeid(U))
     {
-        this->ptr = static_cast<T*>(other.get());
+        this->ptr = (static_cast<T*>(other.get()));
         this->counterS = other.getSCounter();
         *(this->counterS) += 1;
         this->counterW = other.getWCounter();
@@ -246,23 +250,44 @@ size_t ShrdPtr<T>::countS()
 }
 
 template <class T>
+T* ShrdPtr<T>::get() const
+{
+    if (*(this->counterS) != 0)
+    {
+        return ptr;
+    }
+    else
+    {
+        throw "All shared pointer are expired!";
+    }
+}
+
+template <class T>
+T* ShrdPtr<T>::operator->() const
+{
+    if (*(this->counterS) != 0)
+    {
+        return ptr;
+    }
+    else
+    {
+        throw "All shared pointer are expired!";
+    }
+}
+
+template <class T>
 void ShrdPtr<T>::release()
 {
-    if (this->ptr == nullptr)
-    {
-
-    }
-    else if ((this->counterS != nullptr) && (*(this->counterS) - 1 == 0))
-    {
-        delete this->counterS;
-        delete this->counterW;
-        delete this->ptr;
-    }
-    else if (this->ptr != nullptr)
+    if (this->counterS != nullptr)
     {
         *(this->counterS) -= 1;
+        if (*(this->counterS) == 0 && *(this->counterW) == 0)
+        {
+            delete this->ptr;
+            delete this->counterS;
+            delete this->counterW;
+        }
     }
-
 }
 
 template<class T>

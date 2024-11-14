@@ -27,6 +27,10 @@ public:
     template<class U>
     UnqPtr<T>& operator=(const UnqPtr<T>&) = delete;
 
+    T* get() const override;
+
+    T* operator->() const override;
+
     ~UnqPtr();
 
     T* release();
@@ -100,6 +104,32 @@ UnqPtr<T>& UnqPtr<T>::operator=(UnqPtr<U>&& other)
     else
     {
         throw "Input type is not allowed!";
+    }
+}
+
+template <class T>
+T* UnqPtr<T>::get() const
+{
+    if (this->ptr != nullptr)
+    {
+        return ptr;
+    }
+    else
+    {
+        throw "Pointer is expired!";
+    }
+}
+
+template <class T>
+T* UnqPtr<T>::operator->() const
+{
+    if (this->ptr != nullptr)
+    {
+        return ptr;
+    }
+    else
+    {
+        throw "Pointer is expired!";
     }
 }
 
