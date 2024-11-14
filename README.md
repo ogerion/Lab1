@@ -1,3 +1,4 @@
+
 # First lab by Bredihin Vladimir B23-554
 ## Getting started
 
@@ -17,6 +18,9 @@ classDiagram
       MsPtr <|-- UnqPtr
       MsPtr <|-- WeakPtr
       MsPtr <|-- ShrdPtr
+      LinkedListSequence <|-- Sequence
+      LinkedListSequence <|-- Node
+      Node <|-- ShrdPtr
       Ptr : T * ptr
       Ptr: T * get()
       Ptr: *(ptr)()
@@ -79,4 +83,41 @@ classDiagram
 	      concat(MemorySpan<T>)
 	      destroy()
       }
+	class Sequence{
+		size_t size
+		size_t GetLenght()
+		Append(T&)
+		Prepend(T&)
+		InsertAt(T&, size_t)
+		GetFirst()
+		GetLast()
+		Get(size_T)
+		Concat(Sequence &)
+		GetSubSequence(size_t,size_t)
+	}
+	class Node{
+		T & val;
+		ShrdPtr<Node<T>> & next
+		ShrdPtr<Node<T>> & prev
+		T & getVal()
+		setNext(ShrdPtr<Node<T>> &)
+		setPrev(ShrdPtr<Node<T>> &)
+		ShrdPtr<Node<T>> & getNext();
+		ShrdPtr<Node<T>> & getPrev();
+	}
+	class LinkedListSequence{
+		Shrdptr<Node<T>> base
+		
+	}
+	class Sequence{
+		size_t size
+		Append(T&)
+		Prepend(T&)
+		InsertAt(T&, size_t)
+		GetFirst()
+		GetLast()
+		Get(size_T)
+		Concat(Sequence &)
+		GetSubSequence(size_t,size_t)
+	}
 ```
