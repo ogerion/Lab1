@@ -194,18 +194,25 @@ T& LinkedListSequence<T>::GetLast()
 template <class T>
 T& LinkedListSequence<T>::Get(size_t index)
 {
-    ShrdPtr<Node<T>> &actual(base);
-    for (int i = 0; i < index; i++)
+    if (this->size != 0)
     {
-        actual = actual->getNext();
+        ShrdPtr<Node<T>>& actual(base);
+        for (int i = 0; i < index; i++)
+        {
+            actual = actual->getNext();
+        }
+        T& res = actual->getVal();
+        for (int i = 0; i < index; i++)
+        {
+            actual = actual->getPrev();
+        }
+
+        return res;
     }
-    T& res = actual->getVal();
-    for (int i = 0; i < index; i++)
+    else
     {
-        actual = actual->getPrev();
+        throw "There are no items in list!";
     }
-    
-    return res;
 }
 
 template<class T>
