@@ -15,16 +15,11 @@ private:
 
 public:
     template<class U>
-    WeakPtr(WeakPtr<U>&);
-
-    WeakPtr(WeakPtr<T>&&);
+    WeakPtr(WeakPtr<U>&&);
 
     template<class U>
     WeakPtr(const WeakPtr<U>&);
-
-    template<class U>
-    WeakPtr(ShrdPtr<U>&);
-
+    
     template<class U>
     WeakPtr(ShrdPtr<U>&&);
 
@@ -32,22 +27,10 @@ public:
     WeakPtr(const ShrdPtr<U>&);
 
     template<class U>
-    WeakPtr(const ShrdPtr<U>&&);
-
-    template<class U>
-    WeakPtr<T>& operator=(WeakPtr<U>&);
-
-    template<class U>
-    WeakPtr<T>& operator=(WeakPtr<U>&&) noexcept;
+    WeakPtr<T>& operator=(WeakPtr<U>&&);
 
     template<class U>
     WeakPtr<T>& operator=(const WeakPtr<U>&);
-
-    template<class U>
-    WeakPtr<T>& operator=(const WeakPtr<U>&&) noexcept;
-
-    template<class U>
-    WeakPtr<T>& operator=(ShrdPtr<U>&);
 
     template<class U>
     WeakPtr<T>& operator=(ShrdPtr<U>&&);
@@ -55,19 +38,16 @@ public:
     template<class U>
     WeakPtr<T>& operator=(const ShrdPtr<U>&);
 
-    template<class U>
-    WeakPtr<T>& operator=(const ShrdPtr<U>&&);
-
     size_t countW();
 
     size_t countS();
 
-    size_t* getWCounter()
+    size_t* getWCounter() const
     {
         return this->counterW;
     }
 
-    size_t* getSCounter()
+    size_t* getSCounter() const
     {
         return this->counterS;
     }
@@ -79,23 +59,7 @@ public:
 
 template<class T>
 template<class U>
-WeakPtr<T>::WeakPtr(WeakPtr<U>& other)
-{
-    if (std::is_base_of<T, U>() || typeid(T) == typeid(U))
-    {
-        this->ptr = static_cast<T*>(other.get());
-        this->counterW = other.getWCounter();
-        *(this->counterW) += 1;
-        this->counterS = other.getSCounter();
-    }
-    else
-    {
-        throw "Input type is not allowed!";
-    }
-}
-
-template<class T>
-WeakPtr<T>::WeakPtr(WeakPtr<T>&& other)
+WeakPtr<T>::WeakPtr(WeakPtr<U>&& other)
 {
     if (std::is_base_of<T, U>() || typeid(T) == typeid(U))
     {
@@ -113,23 +77,6 @@ WeakPtr<T>::WeakPtr(WeakPtr<T>&& other)
 template<class T>
 template<class U>
 WeakPtr<T>::WeakPtr(const WeakPtr<U>& other)
-{
-    if (std::is_base_of<T, U>() || typeid(T) == typeid(U))
-    {
-        this->ptr = static_cast<T*>(other.get());
-        this->counterW = other.getWCounter();
-        *(this->counterW) += 1;
-        this->counterS = other.getSCounter();
-    }
-    else
-    {
-        throw "Input type is not allowed!";
-    }
-}
-
-template<class T>
-template<class U>
-WeakPtr<T>::WeakPtr(ShrdPtr<U>& other)
 {
     if (std::is_base_of<T, U>() || typeid(T) == typeid(U))
     {
@@ -180,42 +127,7 @@ WeakPtr<T>::WeakPtr(const ShrdPtr<U>& other)
 
 template<class T>
 template<class U>
-WeakPtr<T>::WeakPtr(const ShrdPtr<U>&& other)
-{
-    if (std::is_base_of<T, U>() || typeid(T) == typeid(U))
-    {
-        this->ptr = static_cast<T*>(other.get());
-        this->counterW = other.getWCounter();
-        *(this->counterW) += 1;
-        this->counterS = other.getSCounter();
-    }
-    else
-    {
-        throw "Input type is not allowed!";
-    }
-}
-
-template<class T>
-template<class U>
-WeakPtr<T>& WeakPtr<T>::operator=(WeakPtr<U>& other)
-{
-    this->release();
-    if (std::is_base_of<T, U>() || typeid(T) == typeid(U))
-    {
-        this->ptr = static_cast<T*>(other.get());
-        this->counterW = other.getWCounter();
-        *(this->counterW) += 1;
-        this->counterS = other.getSCounter();
-    }
-    else
-    {
-        throw "Input type is not allowed!";
-    }
-}
-
-template<class T>
-template<class U>
-WeakPtr<T>& WeakPtr<T>::operator=(WeakPtr<U>&& other) noexcept
+WeakPtr<T>& WeakPtr<T>::operator=(WeakPtr<U>&& other)
 {
     this->release();
     if (std::is_base_of<T, U>() || typeid(T) == typeid(U))
@@ -251,42 +163,6 @@ WeakPtr<T>& WeakPtr<T>::operator=(const WeakPtr<U>& other)
 
 template<class T>
 template<class U>
-WeakPtr<T>& WeakPtr<T>::operator=(const WeakPtr<U>&& other) noexcept
-{
-    this->release();
-    if (std::is_base_of<T, U>() || typeid(T) == typeid(U))
-    {
-        this->ptr = static_cast<T*>(other.ptr);
-        this->counterW = std::move(other.counterW);
-        *(this->counterW) += 1;
-        this->counterS = std::move(other.counterS);
-    }
-    else
-    {
-        throw "Input type is not allowed!";
-    }
-}
-
-template<class T>
-template<class U>
-WeakPtr<T>& WeakPtr<T>::operator=(ShrdPtr<U>& other)
-{
-    this->release();
-    if (std::is_base_of<T, U>() || typeid(T) == typeid(U))
-    {
-        this->ptr = static_cast<T*>(other.get());
-        this->counterW = other.getWCounter();
-        *(this->counterW) += 1;
-        this->counterS = other.getSCounter();
-    }
-    else
-    {
-        throw "Input type is not allowed!";
-    }
-}
-
-template<class T>
-template<class U>
 WeakPtr<T>& WeakPtr<T>::operator=(ShrdPtr<U>&& other)
 {
     this->release();
@@ -306,24 +182,6 @@ WeakPtr<T>& WeakPtr<T>::operator=(ShrdPtr<U>&& other)
 template<class T>
 template<class U>
 WeakPtr<T>& WeakPtr<T>::operator=(const ShrdPtr<U>& other)
-{
-    this->release();
-    if (std::is_base_of<T, U>() || typeid(T) == typeid(U))
-    {
-        this->ptr = static_cast<T*>(other.get());
-        this->counterW = other.getWCounter();
-        *(this->counterW) += 1;
-        this->counterS = other.getSCounter();
-    }
-    else
-    {
-        throw "Input type is not allowed!";
-    }
-}
-
-template<class T>
-template<class U>
-WeakPtr<T>& WeakPtr<T>::operator=(const ShrdPtr<U>&& other)
 {
     this->release();
     if (std::is_base_of<T, U>() || typeid(T) == typeid(U))

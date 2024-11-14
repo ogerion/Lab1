@@ -5,7 +5,8 @@
 #include "tests/MemorySpanTest.h"
 #include <matplot/matplot.h>
 #include "tests/PerfomanceTest.h"
-
+#include "LinkedListSequence.h"
+#include "tests/LinkedListSequenceTest.h"
 using namespace std;
 using namespace matplot;
 
@@ -21,7 +22,6 @@ int main()
 	testShrdPtrMove();
 	testShrdPtrReset();
 	testShrdPtrCounter();
-	testShrdPtrDestroy();
 	testShrdPtrTypeCast();
 	testShrdPtrCompatibilityWeak();
 
@@ -29,7 +29,6 @@ int main()
 	testWeakPtrMove();
 	testWeakPtrReset();
 	testWeakPtrCounter();
-	testWeakPtrDestroy();
 	testWeakPtrTypeCast();
 
 	testMsPtrBasic();
@@ -42,8 +41,12 @@ int main()
 	testMemorySpanGet();
 	testMemorySpanCopy();
 
-	vizualize();
-	_CrtSetReportMode(_CRT_WARN, _CRTDBG_MODE_DEBUG);
-	_CrtDumpMemoryLeaks();
+	testLinkedListSequenceBasic();
+	testLinkedListSequenceInsert();
+	testLinkedListSequenceGet();
+	testLinkedListSequenceGetSubSequence();
+	testLinkedListSequenceConcat();
+
+	//vizualize();
 	return 0;
 }

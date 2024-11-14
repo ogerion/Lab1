@@ -17,31 +17,16 @@ public:
     ShrdPtr(T*);
 
     template<class U>
-    ShrdPtr(ShrdPtr<U>&);
-
-    template<class U>
     ShrdPtr(ShrdPtr<U>&&);
 
     template<class U>
     ShrdPtr(const ShrdPtr<U>&);
 
     template<class U>
-    ShrdPtr(const ShrdPtr<U>&&);
-
-    template<class U>
-    ShrdPtr(WeakPtr<U>&);
-
-    template<class U>
     ShrdPtr(WeakPtr<U>&&);
 
     template<class U>
-    ShrdPtr(const WeakPtr<U>&);
-
-    template<class U>
-    ShrdPtr(const WeakPtr<U>&&);
-
-    template<class U>
-    ShrdPtr<T>& operator=(ShrdPtr<U>&);
+    explicit ShrdPtr(const WeakPtr<U>&);
 
     template<class U>
     ShrdPtr<T>& operator=(ShrdPtr<U>&&);
@@ -50,30 +35,21 @@ public:
     ShrdPtr<T>& operator=(const ShrdPtr<U>&);
 
     template<class U>
-    ShrdPtr<T>& operator=(const ShrdPtr<U>&&);
-
-    template<class U>
-    ShrdPtr<T>& operator=(WeakPtr<U>&);
-
-    template<class U>
     ShrdPtr<T>& operator=(WeakPtr<U>&&);
 
     template<class U>
     ShrdPtr<T>& operator=(const WeakPtr<U>&);
 
-    template<class U>
-    ShrdPtr<T>& operator=(const WeakPtr<U>&&);
-
     size_t countW();
 
     size_t countS();
 
-    size_t* getWCounter()
+    size_t* getWCounter() const
     {
         return this->counterW;
     }
 
-    size_t* getSCounter()
+    size_t* getSCounter() const
     {
         return this->counterS;
     }
@@ -81,16 +57,14 @@ public:
     ~ShrdPtr();
 
     void reset();
-
-    T* destroy();
 };
 
 template<class T>
 ShrdPtr<T>::ShrdPtr()
 {
     this->ptr = nullptr;
-    this->counterS = nullptr;
-    this->counterW = nullptr;
+    this->counterS = new size_t(1);
+    this->counterW = new size_t(0);
 }
 
 template<class T>
@@ -99,23 +73,6 @@ ShrdPtr<T>::ShrdPtr(T* ptr)
     this->ptr = ptr;
     this->counterS = new size_t(1);
     this->counterW = new size_t(0);
-}
-
-template<class T>
-template<class U>
-ShrdPtr<T>::ShrdPtr(ShrdPtr<U>& other)
-{
-    if (std::is_base_of<T, U>() || typeid(T) == typeid(U))
-    {
-        this->ptr = static_cast<T*>(other.get());
-        this->counterS = other.getSCounter();
-        *(this->counterS) += 1;
-        this->counterW = other.getWCounter();
-    }
-    else
-    {
-        throw "Input type is not allowed!";
-    }
 }
 
 template<class T>
@@ -138,40 +95,6 @@ ShrdPtr<T>::ShrdPtr(ShrdPtr<U>&& other)
 template<class T>
 template<class U>
 ShrdPtr<T>::ShrdPtr(const ShrdPtr<U>& other)
-{
-    if (std::is_base_of<T, U>() || typeid(T) == typeid(U))
-    {
-        this->ptr = static_cast<T*>(other.get());
-        this->counterS = other.getSCounter();
-        *(this->counterS) += 1;
-        this->counterW = other.getWCounter();
-    }
-    else
-    {
-        throw "Input type is not allowed!";
-    }
-}
-
-template<class T>
-template<class U>
-ShrdPtr<T>::ShrdPtr(const ShrdPtr<U>&& other)
-{
-    if (std::is_base_of<T, U>() || typeid(T) == typeid(U))
-    {
-        this->ptr = static_cast<T*>(other.get());
-        this->counterS = other.getSCounter();
-        *(this->counterS) += 1;
-        this->counterW = other.getWCounter();
-    }
-    else
-    {
-        throw "Input type is not allowed!";
-    }
-}
-
-template<class T>
-template<class U>
-ShrdPtr<T>::ShrdPtr(WeakPtr<U>& other)
 {
     if (std::is_base_of<T, U>() || typeid(T) == typeid(U))
     {
@@ -222,41 +145,6 @@ ShrdPtr<T>::ShrdPtr(const WeakPtr<U>& other)
 
 template<class T>
 template<class U>
-ShrdPtr<T>::ShrdPtr(const WeakPtr<U>&& other)
-{
-    if (std::is_base_of<T, U>() || typeid(T) == typeid(U))
-    {
-        this->ptr = static_cast<T*>(other.get());
-        this->counterS = other.getSCounter();
-        *(this->counterS) += 1;
-        this->counterW = other.getWCounter();
-    }
-    else
-    {
-        throw "Input type is not allowed!";
-    }
-}
-
-template<class T>
-template<class U>
-ShrdPtr<T>& ShrdPtr<T>::operator=(ShrdPtr<U>& other)
-{
-    this->release();
-    if (std::is_base_of<T, U>() || typeid(T) == typeid(U))
-    {
-        this->ptr = static_cast<T*>(other.get());
-        this->counterS = other.getSCounter();
-        *(this->counterS) += 1;
-        this->counterW = other.getWCounter();
-    }
-    else
-    {
-        throw "Input type is not allowed!";
-    }
-}
-
-template<class T>
-template<class U>
 ShrdPtr<T>& ShrdPtr<T>::operator=(ShrdPtr<U>&& other)
 {
     this->release();
@@ -291,41 +179,6 @@ ShrdPtr<T>& ShrdPtr<T>::operator=(const ShrdPtr<U>& other)
     }
 }
 
-template<class T>
-template<class U>
-ShrdPtr<T>& ShrdPtr<T>::operator=(const ShrdPtr<U>&& other)
-{
-    this->release();
-    if (std::is_base_of<T, U>() || typeid(T) == typeid(U))
-    {
-        this->ptr = static_cast<T*>(other.get());
-        this->counterS = other.getSCounter();
-        *(this->counterS) += 1;
-        this->counterW = other.getWCounter();
-    }
-    else
-    {
-        throw "Input type is not allowed!";
-    }
-}
-
-template<class T>
-template<class U>
-ShrdPtr<T>& ShrdPtr<T>::operator=(WeakPtr<U>& other)
-{
-    this->release();
-    if (std::is_base_of<T, U>() || typeid(T) == typeid(U))
-    {
-        this->ptr = static_cast<T*>(other.get());
-        this->counterS = other.getSCounter();
-        *(this->counterS) += 1;
-        this->counterW = other.getWCounter();
-    }
-    else
-    {
-        throw "Input type is not allowed!";
-    }
-}
 
 template<class T>
 template<class U>
@@ -348,24 +201,6 @@ ShrdPtr<T>& ShrdPtr<T>::operator=(WeakPtr<U>&& other)
 template<class T>
 template<class U>
 ShrdPtr<T>& ShrdPtr<T>::operator=(const WeakPtr<U>& other)
-{
-    this->release();
-    if (std::is_base_of<T, U>() || typeid(T) == typeid(U))
-    {
-        this->ptr = static_cast<T*>(other.get());
-        this->counterS = other.getSCounter();
-        *(this->counterS) += 1;
-        this->counterW = other.getWCounter();
-    }
-    else
-    {
-        throw "Input type is not allowed!";
-    }
-}
-
-template<class T>
-template<class U>
-ShrdPtr<T>& ShrdPtr<T>::operator=(const WeakPtr<U>&& other)
 {
     this->release();
     if (std::is_base_of<T, U>() || typeid(T) == typeid(U))
@@ -437,14 +272,4 @@ void ShrdPtr<T>::reset()
     this->counterS = nullptr;
     this->counterW = nullptr;
     this->ptr = nullptr;
-}
-
-template<class T>
-T* ShrdPtr<T>::destroy()
-{
-    T* res = this->ptr;
-    delete (this->counterS);
-    delete (this->counterW);
-    this->ptr = nullptr;
-    return res;
 }

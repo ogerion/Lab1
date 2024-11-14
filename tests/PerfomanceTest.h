@@ -13,10 +13,10 @@ using namespace matplot;
 long long MeasureSpan(long long x)
 {
 	auto start = high_resolution_clock::now();
-	MemorySpan<int> span(new int(1));
-	for (int i = 0; i < x; i++)
+	MemorySpan<long> span(new long(1));
+	for (long i = 0; i < x; i++)
 	{
-		span.append(new int(i));
+		span.append(new long(i));
 	}
 	span.destroy();
 	auto stop = high_resolution_clock::now();
@@ -27,10 +27,10 @@ long long MeasureSpan(long long x)
 long long MeasureUnq(long long x)
 {
 	auto start = high_resolution_clock::now();
-	UnqPtr<int> ptr = (new int(1));
-	for (int i = 0; i < x; i++)
+	UnqPtr<long> ptr = (new long(1));
+	for (long i = 0; i < x; i++)
 	{
-		delete new UnqPtr<int>(new int(i));
+		delete new UnqPtr<long>(new long(i));
 	}
 	auto stop = high_resolution_clock::now();
 	auto duration = duration_cast<microseconds>(stop - start);
@@ -40,10 +40,10 @@ long long MeasureUnq(long long x)
 long long MeasureShrd(long long x)
 {
 	auto start = high_resolution_clock::now();
-	ShrdPtr<int> ptr = (new int(1));
-	for (int i = 0; i < x; i++)
+	ShrdPtr<long> ptr = (new long(1));
+	for (long i = 0; i < x; i++)
 	{
-		delete new ShrdPtr<int>(ptr);
+		delete new ShrdPtr<long>(ptr);
 	}
 	auto stop = high_resolution_clock::now();
 	auto duration = duration_cast<microseconds>(stop - start);
@@ -53,10 +53,10 @@ long long MeasureShrd(long long x)
 long long MeasureMs(long long x)
 {
 	auto start = high_resolution_clock::now();
-	MsPtr<int> ptr = (new int(1));
+	MsPtr<long> ptr = (new long(1));
 	for (int i = 0; i < x; i++)
 	{
-		delete new MsPtr<int>(new int(i));
+		delete new MsPtr<long>(new long(i));
 	}
 	auto stop = high_resolution_clock::now();
 	auto duration = duration_cast<microseconds>(stop - start);
@@ -66,11 +66,11 @@ long long MeasureMs(long long x)
 long long MeasurePtr(long long x)
 {
 	auto start = high_resolution_clock::now();
-	int * ptr = new int(1);
+	long* ptr = new long(1);
 	delete ptr;
-	for (int i = 0; i < x; i++)
+	for (long i = 0; i < x; i++)
 	{
-		delete new int(i);
+		delete new long(i);
 	}
 	auto stop = high_resolution_clock::now();
 	auto duration = duration_cast<microseconds>(stop - start);

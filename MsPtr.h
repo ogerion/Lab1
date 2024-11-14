@@ -6,7 +6,7 @@ template<class T>
 class MsPtr
 {
 private:
-    ShrdPtr<T>* ptr;
+    ShrdPtr<T> ptr;
     MsPtr<T>* next;
     MsPtr<T>* prev;
 public:
@@ -38,7 +38,7 @@ public:
 template<class T>
 MsPtr<T>::MsPtr()
 {
-    this->ptr = new ShrdPtr<T>();
+    this->ptr = ShrdPtr<T>();
     this->next = nullptr;
     this->prev = nullptr;
 }
@@ -46,7 +46,7 @@ MsPtr<T>::MsPtr()
 template<class T>
 MsPtr<T>::MsPtr(T* ptr)
 {
-    this->ptr = new ShrdPtr<T>(ptr);
+    this->ptr = ShrdPtr<T>(ptr);
     this->next = this;
     this->prev = this;
 }
@@ -76,9 +76,9 @@ UnqPtr<T> && MsPtr<T>::get()
         this->getPrev()->setNext(this->getNext());
         this->getNext()->setPrev(temp);
     }
-    UnqPtr<T> * res = new UnqPtr<T>(this->ptr->destroy());
-    delete ptr;
-    ptr = nullptr;
+    T* temp = new T(*(ptr));
+    ptr.reset();
+    UnqPtr<T>* res = new UnqPtr<T>(temp);
     return std::move(*res);
 }
 
@@ -92,7 +92,7 @@ WeakPtr<T>&& MsPtr<T>::copy(int pos)
 template<class T>
 WeakPtr<T>&& MsPtr<T>::copy()
 {
-    WeakPtr<T> * res = new WeakPtr<T>(*(this->ptr));
+    WeakPtr<T> * res = new WeakPtr<T>(this->ptr);
     return std::move(*res);
 }
 
@@ -142,7 +142,7 @@ MsPtr<T>* MsPtr<T>::getPrev()
 template<class T>
 MsPtr<T>::~MsPtr()
 {
-    if (ptr == nullptr)
+    if (!ptr)
     {
 
     }
@@ -158,14 +158,5 @@ MsPtr<T>::~MsPtr()
     {
         this->getPrev()->setNext(this->getNext());
         this->getNext()->setPrev(this->getPrev());
-    }
-    if (ptr != nullptr && ptr->get() != nullptr)
-    {
-        delete ptr->destroy();
-        
-    }
-    if (ptr != nullptr)
-    {
-        delete ptr;
     }
 }

@@ -1,4 +1,5 @@
 #pragma once
+#include <utility>
 template <class T>
 class Ptr
 {
@@ -24,7 +25,7 @@ public:
         return *ptr;
     }
 
-    T* get() // get pointer
+    T* get() const // get pointer
     {
         return ptr;
     }

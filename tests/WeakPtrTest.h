@@ -64,22 +64,6 @@ void testWeakPtrCounter()
 	assert(ptr.countW() == 6);
 }
 
-void testWeakPtrDestroy()
-{
-	int* a = new int(10);
-	ShrdPtr<int> ptr(a);
-	WeakPtr<int> ptr1(ptr);
-	WeakPtr<int> ptr2(ptr);
-	WeakPtr<int> ptr3(ptr);
-	WeakPtr<int> ptr4(ptr);
-	WeakPtr<int> ptr5(ptr);
-	WeakPtr<int> ptr6(ptr);
-	delete ptr.destroy();
-
-	assert(ptr.get() == nullptr);
-}
-
-
 void testWeakPtrTypeCast()
 {
 	class A {};
