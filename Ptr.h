@@ -6,14 +6,7 @@ class Ptr
 protected:
     T* ptr;
 public:
-    T* operator->() //get ptr
-    {
-        return ptr;
-    }
-    const T* operator->() const // get const ptr
-    {
-        return ptr;
-    }
+    virtual T* operator->() const = 0; // get ptr
 
     T& operator*() // get value
     {
@@ -25,10 +18,8 @@ public:
         return *ptr;
     }
 
-    T* get() const // get pointer
-    {
-        return ptr;
-    }
+    virtual T* get() const = 0; // get pointer
+    
 
     operator bool() const
     {
