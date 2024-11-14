@@ -9,7 +9,7 @@
 
 ```mermaid
 classDiagram
-	  MemorySpan<|-- MsPtr
+	MemorySpan<|-- MsPtr
       UnqPtr<|-- Ptr
       ShrdPtr<|-- Ptr
       WeakPtr<|-- Ptr
